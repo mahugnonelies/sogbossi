@@ -1,0 +1,44 @@
+name: GoLieuX Promotions Scheduler
+
+on:
+  schedule:
+    # Execution toutes les 5 minutes
+    - cron: "*/5 * * * *"
+
+  # Permet également de lancer manuellement
+  workflow_dispatch:
+
+jobs:
+  manage-promotions:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Activate scheduled promotions
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          echo "Activation des promotions programmées..."
+
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            "${SUPABASE_URL}/rest/v1/rpc/activate_scheduled_promotions" \
+            --header "apikey: ${SUPABASE_SERVICE_ROLE_KEY}" \
+            --header "Authorization: Bearer ${SUPABASE_SERVICE_ROLE_KEY}" \
+            --header "Content-Type: application/json" \
+            --data '{}' 
+
+      - name: Expire finished promotions
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          echo "Expiration des promotions terminées..."
+
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            "${SUPABASE_URL}/rest/v1/rpc/expire_finished_promotions" \
+            --header "apikey: ${SUPABASE_SERVICE_ROLE_KEY}" \
+            --header "Authorization: Bearer ${SUPABASE_SERVICE_ROLE_KEY}" \
+            --header "Content-Type: application/json" \
+            --data '{}'
