@@ -11,6 +11,10 @@ on:
     types:
       - promotions-scheduler  
 
+concurrency:
+  group: golieux-promotions-scheduler
+  cancel-in-progress: false      
+
 jobs:
   manage-promotions:
     runs-on: ubuntu-latest
