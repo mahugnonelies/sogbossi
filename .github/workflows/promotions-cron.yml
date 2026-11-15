@@ -7,6 +7,10 @@ on:
   # Permet également de lancer manuellement
   workflow_dispatch:
 
+  repository_dispatch:
+    types:
+      - promotions-scheduler  
+
 jobs:
   manage-promotions:
     runs-on: ubuntu-latest
